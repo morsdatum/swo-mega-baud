@@ -1,0 +1,26 @@
+#folder cortex 's SConscript file
+Import('cm_env')
+Import('cm_dir')
+Import('cm_prefix')
+
+binary = 'rx-trace'
+
+elf_file = binary +'.elf'
+
+cm_path = cm_dir +'/'
+
+cm_env.Append(variables=vars, CPPDEFINES=['STM32F4']) #, 'TESTALL'])
+
+cm_env.Program(target=elf_file,source=Glob('*.c'))
+
+import os.path 
+if not os.path.exists(elf_file):
+	cm_env.Command(elf_file+'.size',elf_file,cm_prefix+'size '+cm_dir+'/'+elf_file)
+
+cm_env.Command(binary+'.bin',elf_file,cm_prefix+'objcopy -Obinary '+cm_path+elf_file+' '+cm_path+binary+'.bin')
+cm_env.Command(binary+'.hex',elf_file,cm_prefix+'objcopy -Oihex '+cm_path+elf_file+' '+cm_path+binary+'.hex')
+cm_env.Command(binary+'.s19',elf_file,cm_prefix+'objcopy -Osrec '+cm_path+elf_file+' '+cm_path+binary+'.s19')
+cm_env.Command(binary+'.lst',elf_file,cm_prefix+'objdump -S '+cm_path+elf_file+' > '+cm_path+binary+'.lst')
+
+cm_env.Clean('clean.cm.d',Glob('*.d'))
+cm_env.Clean('clean.cm.extra',Split(cm_path+binary+'.bin '+cm_path+binary+'.hex '+cm_path+binary+'.s19 '+cm_path+binary+'.lst'))

@@ -1,0 +1,22 @@
+# folder msp430 's SConscript file
+Import('msp_env')
+Import('msp_dir')
+Import('msp_prefix')
+
+binary = 'tx-main'
+
+elf_file = binary+'.elf'
+
+msp_path = msp_dir + '/'
+#msp_env.Append(CPPDEFINES=['TESTALL'])
+msp_env.Program(target=elf_file,source=Glob('*.c'))
+
+import os.path
+
+if not os.path.exists(elf_file):
+	msp_env.Command(elf_file+'.size',elf_file,msp_prefix+'size '+msp_path+elf_file)
+msp_env.Command(binary+'.a43',elf_file,msp_prefix+'objcopy -O ihex '+msp_path+elf_file+' '+msp_path+binary+'.a43')
+msp_env.Command(binary+'.lst',elf_file,msp_prefix+'objdump -dSt '+msp_path+elf_file+' > '+msp_path+binary+'.lst')
+
+msp_env.Clean('clean.msp.d',Glob('*.d'))
+msp_env.Clean('clean.msp.extra',Split(msp_path+binary+'.a43 '+msp_path+binary+'.lst'))
