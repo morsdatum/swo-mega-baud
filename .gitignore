@@ -1,0 +1,13 @@
+*.d
+*.o
+*.bin
+*.elf
+*.s19
+*.a43
+*.map
+*.lst
+*.log
+*~
+*.swp
+*.dblite
+
