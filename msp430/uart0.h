@@ -10,10 +10,7 @@
 #define P1_TXD  BIT2
 
 
-#define BAUDRATE_CONST (1000000/9600)
-#define BAUDRATE_CONST_HALF (BAUDRATE_CONST / 2)
-//#define BAUDRATE_CONST (417)
-
+// trace message output to uart for debugging
 
 uint8_t recv_char_poll(void);
 

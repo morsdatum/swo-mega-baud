@@ -62,7 +62,7 @@ inline void setup_watchdog(void){
 }
 
 inline void setup_clk_src(void){
-  DCOCTL = 0;
+  DCOCTL = 0; // use RC as core clock
 #if (SYSCLK == 8000000)
   BCSCTL1 = CALBC1_8MHZ | DIVA_0; // ACLK -> 32768
 #elif (SYSCLK == 1000000)
@@ -109,14 +109,14 @@ inline void setup_uart(void){
 }
 
 inline void setup_timera(void){
-  TA1CTL = TACLR;
+  TA1CTL = TACLR; // timer a for debouncing button
   TA1CCR0 = TMRA_VAL;
   TA1CTL = TASSEL_1;
   // TA1CTL |= (MC_1 | TAIE); // to start timer irq
 }
 
 __attribute__((interrupt(PORT1_VECTOR)))
-void port1_isr(void){  
+void port1_isr(void){  // use failing edge detection to trigger debouncing
   P1OUT ^= P1_LED1;
 #if !defined(TEXTCASE) && !defined(TESTALL)
   if((P1IFG & P1_BTN) == P1_BTN){

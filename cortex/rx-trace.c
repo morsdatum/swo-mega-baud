@@ -31,6 +31,10 @@ static const tests_fcnptr_t runner[]={
 
 static volatile uint16_t debounce_cnt;
 
+/*
+ * interrupt routines must stay with main function
+ */ 
+
 #if (UARTXD == USART2)
 void USART2_IRQHandler(void)
 
@@ -86,7 +90,7 @@ void UART5_IRQHandler(void)
     //trace_printf("\n\rIn fct %s() ",__FUNCTION__);
 
     recv_data = (char)usart_recv(UARTRX);
-    trace_putchar(recv_data);
+    trace_putchar(recv_data); // relay uart received data to swo
   }
 
   nvic_clear_pending_irq(RX_IRQ_NUM);
@@ -95,7 +99,7 @@ void UART5_IRQHandler(void)
 
 void EXTI0_IRQHandler(void){
 
-
+ // exti0 using as trigger for debouncing
 
   if(exti_get_flag_status(EXTI0) == EXTI0){
     //trace_printf("\n\rIn fct %s()",__FUNCTION__);
